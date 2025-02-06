@@ -201,11 +201,11 @@ namespace crt
 				}
 				else if (logType == LogType::lt_Int32)
 				{
-					ESP_LOGI(LoggerTask::taskName,"%d",*pNextInt32Log++);
+					ESP_LOGI(LoggerTask::taskName,"%ld",*pNextInt32Log++);
 				}
                 else if (logType == LogType::lt_Uint32)
                 {
-                    ESP_LOGI(LoggerTask::taskName, "%d", *pNextUint32Log++);
+                    ESP_LOGI(LoggerTask::taskName, "%lu", *pNextUint32Log++);
                 }
 				else if (logType == LogType::lt_Float)
 				{
@@ -213,9 +213,9 @@ namespace crt
 				}
 				else
 				{
-					ESP_LOGI(LoggerTask::taskName,"%d",latestLatestBatchCount);
-					ESP_LOGI(LoggerTask::taskName,"%d",latestBatchCount);
-					ESP_LOGI(LoggerTask::taskName,"%d",i);
+					ESP_LOGI(LoggerTask::taskName,"%ld",latestLatestBatchCount);
+					ESP_LOGI(LoggerTask::taskName,"%ld",latestBatchCount);
+					ESP_LOGI(LoggerTask::taskName,"%ld",i);
 					
 					assert(false);
 					break; // something's wrong.

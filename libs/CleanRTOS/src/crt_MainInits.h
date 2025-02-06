@@ -12,6 +12,7 @@ namespace crt
     public:
         MainInits()
         {
+            // New esp idf inits timers automatically. It throws an error when initializing twice. Currently its turned off.
             esp_timer_init();   // Allow creation and use of microsecond timers.
         }
     };

@@ -14,7 +14,7 @@
 #include <Arduino.h>
 
 // Selecteer onderstaand de .ino van je applicatie
-//#include <HelloWorld.ino>    // For initial test.
+// #include <HelloWorld.ino>    // For initial test.
 //#include <TestHwLibGlcOled.ino>
 //#include <ClockPin.ino>
 //#include <crt_TestWeightScale_hx711.h>
@@ -29,13 +29,17 @@
 //#include <AsyncDisplay.ino>
 //#include <Free_Font_Demo.ino>
 //#include "TestButton.ino"
-#include "oled_example.ino"
+//#include "oled_example.ino"
 //#include <TouchscreenButton.ino>
 //#include <TouchscreenButtonGroup.ino>
 //#include <TouchscreenKeyboardLowerCase.ino>  // Not finalised yet.
 //#include <Queue2.ino>                        // Not sure if this is already finalised.
 //#include <oled_example.ino> // van jan
 //#include <ssd1306_128x64_i2c.ino>
+
+//#include "Timer_ino.h"
+//#include "Flag_ino.h"
+#include "AllWaitables_ino.h"
 
 #include "nvs_flash.h" // nodig voor WIFI functionaliteit
 
@@ -59,6 +63,8 @@ void app_main(void)
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
+
+	// vTaskDelay(pdMS_TO_TICKS(100));
 
 	setup();
 	for(;;)

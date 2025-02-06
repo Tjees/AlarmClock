@@ -40,7 +40,7 @@ namespace crt
 				wait(periodicTimer);
 				timeMicrosNew = esp_timer_get_time();
 				ESP_LOGI("TestTimer", "Timer fired after microseconds:");
-				ESP_LOGI("TestTimer","%d",int32_t(timeMicrosNew - timeMicros));
+				ESP_LOGI("TestTimer","%d",int(timeMicrosNew - timeMicros));
 				timeMicros = timeMicrosNew; 				// prepare for next measurement
 				
 				ESP_LOGI("TestTimer", "Starting short sleep");
@@ -48,7 +48,7 @@ namespace crt
                 sleepTimer.sleep_us(100);					// Test the one-shot timer with a sleep of 100 microseconds.
                 timeMicrosNew2 = esp_timer_get_time();      // Note: it is recommended to use vTaskDelay for all sleeps greater than 1ms (that saves on hardware timer resources).
                 ESP_LOGI("TestTimer", "Sleep time was microseconds:");
-                ESP_LOGI("TestTimer","%d",int32_t(timeMicrosNew2 - timeMicros2));
+                ESP_LOGI("TestTimer","%d",int(timeMicrosNew2 - timeMicros2));
 			}
 		}
 	}; // end class TestTimers

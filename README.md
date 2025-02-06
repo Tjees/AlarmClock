@@ -1,5 +1,2 @@
-Use this command to install Arduino component:
-git clone https://github.com/espressif/arduino-esp32.git arduino && \
-
-Use this as extra:
+Use this to install the Arduino component:
 https://docs.espressif.com/projects/arduino-esp32/en/latest/esp-idf_component.html

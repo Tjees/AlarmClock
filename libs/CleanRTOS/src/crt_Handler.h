@@ -137,7 +137,7 @@ namespace crt
 				                                     // within the #defines below.
 				if (diffAll >= periodUs)
 				{
-					ESP_LOGI("Handler Delay too long:", "%d us", diffAll);
+					ESP_LOGI("Handler Delay too long:", "%lu us", diffAll);
 				}
 
 				if (diffAll < periodUs) {

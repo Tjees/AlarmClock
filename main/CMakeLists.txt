@@ -2,8 +2,8 @@ idf_component_register(
     SRCS 
         "main.cpp"
         "oled_example.ino"
-        "../components/arduino/libraries/Adafruit-GFX-Library-1.11.11/Adafruit_GFX.cpp"
-        "../components/arduino/libraries/Adafruit_SSD1306-2.5.13/Adafruit_SSD1306.cpp"
+        "../components/arduino-esp32/libraries/Adafruit-GFX-Library-1.11.11/Adafruit_GFX.cpp"
+        "../components/arduino-esp32/libraries/Adafruit_SSD1306-2.5.13/Adafruit_SSD1306.cpp"
         "../libs/CleanCore/src/crt_FromArduinoIDE.cpp"
     INCLUDE_DIRS
         "."
@@ -27,8 +27,8 @@ idf_component_register(
         "../libs/CleanCore/src"
         "../libs/CleanCore/examples/StdQueue"
         "../libs"
-        "../components/arduino/libraries/WiFi/examples/WifiScan"
-        "../components/arduino/libraries/Adafruit_BusIO-1.17.0"
-        "../components/arduino/libraries/Adafruit_SSD1306-2.5.13"
-        "../components/arduino/libraries/Adafruit-GFX-Library-1.11.11"
+        "../components/arduino-esp32/libraries/WiFi/examples/WifiScan"
+        "../components/arduino-esp32/libraries/Adafruit_BusIO-1.17.0"
+        "../components/arduino-esp32/libraries/Adafruit_SSD1306-2.5.13"
+        "../components/arduino-esp32/libraries/Adafruit-GFX-Library-1.11.11"
 )

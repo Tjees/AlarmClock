@@ -1,6 +1,9 @@
 #include "crt_FreeRTOS.h" // for uint32_t etc.
 #include "crt_ILogger.h"
 #include "crt_FromArduinoIDE.h"
+#include "esp_timer.h"
+#include "rom/gpio.h"
+
 namespace crt
 {
 	extern ILogger& logger;

@@ -29,7 +29,7 @@
 //#include <AsyncDisplay.ino>
 //#include <Free_Font_Demo.ino>
 //#include "TestButton.ino"
-#include <WifiScan.ino>
+#include "oled_example.ino"
 //#include <TouchscreenButton.ino>
 //#include <TouchscreenButtonGroup.ino>
 //#include <TouchscreenKeyboardLowerCase.ino>  // Not finalised yet.

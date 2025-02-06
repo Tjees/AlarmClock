@@ -12,3 +12,7 @@
 #include "esp_log.h"
 //#include "esp_heap_trace.h"
 #include "esp_heap_caps.h"
+
+// newly added includes.
+#include "esp_timer.h" // esp timer.
+#include "rom/gpio.h" // esp gpio.

@@ -37,8 +37,8 @@ namespace crt
 
 				uint64_t beforeImmediateLogging = esp_timer_get_time();
 				ESP_LOGI("", "This is some plain text");
-				ESP_LOGI("This is an int32", "%d", anInt);
-				ESP_LOGI("This is an uint32", "%d", aUint);
+				ESP_LOGI("This is an int32", "%ld", anInt);
+				ESP_LOGI("This is an uint32", "%lu", aUint);
 				ESP_LOGI("This is a float", "%f", aFloat);
 				uint64_t afterImmediateLogging = esp_timer_get_time();
 
@@ -56,8 +56,8 @@ namespace crt
 
 				logger.dumpNow();
 
-				ESP_LOGI("Immediate logging spent microseconds", "%d", (int32_t)(afterImmediateLogging - beforeImmediateLogging));
-				ESP_LOGI("Postponed logging spent microseconds", "%d", (int32_t)(afterPostponedLogging - beforePostPonedLogging));
+				ESP_LOGI("Immediate logging spent microseconds", "%ld", (int32_t)(afterImmediateLogging - beforeImmediateLogging));
+				ESP_LOGI("Postponed logging spent microseconds", "%ld", (int32_t)(afterPostponedLogging - beforePostPonedLogging));
 				ESP_LOGI("", "So for time critical debugging, it's better to use the postponed logger.");
 
 				ESP_LOGI("", "Apart from calling logger.dumpNow(), you can also initiate");

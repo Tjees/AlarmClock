@@ -13,3 +13,7 @@ ESP_SYSTEM_INIT_FN(esp_timer_init_os, SECONDARY, ESP_TIMER_INIT_MASK, 100)
 {
     return ESP_OK;
 }
+
+Also watch the buttons, configuring the wrong pins for the buttons can cause resets.
+
+Tested with: esp32-s and esp32-C6.

@@ -32,4 +32,5 @@ idf_component_register(
         "../components/arduino/libraries/Adafruit_SSD1306-2.5.13"
         "../components/arduino/libraries/Adafruit-GFX-Library-1.11.11"
         "../pong"
+        "../project"
 )

@@ -41,7 +41,8 @@
 //#include "Flag_ino.h"
 //#include "AllWaitables_ino.h"
 
-#include "Pong2_ino.h"
+// #include "Pong2_ino.h"
+#include "Project_ino.h"
 
 #include "nvs_flash.h" // nodig voor WIFI functionaliteit
 
@@ -73,7 +74,7 @@ void app_main(void)
 	{
 		loop();
 		//yield();
-		vTaskDelay(10);  // prevent the watchdog timer to kick in for this thread.
+		vTaskDelay(1);  // prevent the watchdog timer to kick in for this thread.
 	}
 }
 

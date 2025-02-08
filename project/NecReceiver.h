@@ -58,12 +58,12 @@ namespace crt
                 pauseQueue.clear();
             }
             signalQueue.write(t_Us);
-            // ESP_LOGI("signal","%lu",t_Us);
+            //ESP_LOGI("signal","%lu",t_Us);
         }
 
         void pauseDetected(uint32_t t_Us) {
             pauseQueue.write(t_Us);
-            // ESP_LOGI("pause","%lu",t_Us);
+            //ESP_LOGI("pause","%lu",t_Us);
         }
 
 	private:
@@ -127,14 +127,14 @@ namespace crt
                         n++;
                     }
                     else{
-                        extractMessage(msg, nofBytes, m, n);
-                        splitIntoHexBytes(msg);
+                        //extractMessage(msg, nofBytes, m, n);
+                        splitIntoHexBytes(m);
 
                         ESP_LOGI("byte1", "%x", byte1);
                         ESP_LOGI("byte2", "%x", byte2);
                         ESP_LOGI("byte3", "%x", byte3);
                         ESP_LOGI("byte4", "%x", byte4);
-                        ESP_LOGI("nofbytes","%lu", nofBytes);
+                        ESP_LOGI("nofbytes","%lu", n);
 
                         state = STATE_WAITING_FOR_LEAD_SIGNAL;
 
@@ -148,7 +148,8 @@ namespace crt
                     break;
                 }
 
-                vTaskDelay(1);
+                // vTaskDelay(1);
+                taskYIELD();
 			}
 		}
 	}; // end class BallControl

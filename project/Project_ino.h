@@ -7,6 +7,7 @@
 #include <crt_Logger.h>
 #include "SignalPauseDetector.h"
 #include "NecReceiver.h"
+#include "Display.h"
 
 namespace crt
 {
@@ -18,8 +19,9 @@ namespace crt
 
     MainInits mainInits;            // Initialize CleanRTOS.
     
-    NecReceiver necReceiver("NecReceiver", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
-    SignalPauseDetector pauseDetector("PauseDetector", 2 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, necReceiver);
+	Display oled("Display", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
+    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
+    SignalPauseDetector pauseDetector("PauseDetector", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, necReceiver);
 }
 
 void setup()

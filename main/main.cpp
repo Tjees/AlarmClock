@@ -29,7 +29,7 @@
 //#include <AsyncDisplay.ino>
 //#include <Free_Font_Demo.ino>
 //#include "TestButton.ino"
-//#include "oled_example.ino"
+#include "oled_example.ino"
 //#include <TouchscreenButton.ino>
 //#include <TouchscreenButtonGroup.ino>
 //#include <TouchscreenKeyboardLowerCase.ino>  // Not finalised yet.
@@ -42,7 +42,7 @@
 //#include "AllWaitables_ino.h"
 
 // #include "Pong2_ino.h"
-#include "Project_ino.h"
+// #include "Project_ino.h"
 
 #include "nvs_flash.h" // nodig voor WIFI functionaliteit
 

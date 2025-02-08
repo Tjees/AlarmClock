@@ -14,7 +14,7 @@
 #include <Arduino.h>
 
 // Selecteer onderstaand de .ino van je applicatie
-// #include <HelloWorld.ino>    // For initial test.
+//#include <Hell// #include <HelloWorld.ino>    // For initial test.
 //#include <TestHwLibGlcOled.ino>
 //#include <ClockPin.ino>
 //#include <crt_TestWeightScale_hx711.h>
@@ -28,8 +28,8 @@
 //#include <LITTLEFS_test.ino>
 //#include <AsyncDisplay.ino>
 //#include <Free_Font_Demo.ino>
-//#include "TestButton.ino"
-#include "oled_example.ino"
+//#include "TtButton.ino"
+//#include "oled_example.ino"
 //#include <TouchscreenButton.ino>
 //#include <TouchscreenButtonGroup.ino>
 //#include <TouchscreenKeyboardLowerCase.ino>  // Not finalised yet.
@@ -41,8 +41,8 @@
 //#include "Flag_ino.h"
 //#include "AllWaitables_ino.h"
 
-// #include "Pong2_ino.h"
-// #include "Project_ino.h"
+// #include//  "Pong2_ino.h"
+#include "Project_ino.h"
 
 #include "nvs_flash.h" // nodig voor WIFI functionaliteit
 

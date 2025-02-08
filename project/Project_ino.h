@@ -20,14 +20,15 @@ namespace crt
     MainInits mainInits;            // Initialize CleanRTOS.
     
 	Display oled("Display", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
-    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
+    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled);
     SignalPauseDetector pauseDetector("PauseDetector", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, necReceiver);
 }
 
 void setup()
 {
 	// initialize serial communication at 115200 bits per second:
-	// Serial.begin(115200);    // Only needed when using Serial.print();
+	Serial.begin(115200);    // Only needed when using Serial.print();
+	Wire.begin(6, 7);
 
 	vTaskDelay(10);// allow tasks to initialize.
 	ESP_LOGI("checkpoint", "start of main");

@@ -2,6 +2,7 @@
 
 #pragma once
 #include <crt_CleanRTOS.h>
+#include "Display.h"
 
 // This file contains the code of multiple tasks that run concurrently and notify eachother using flags.
 
@@ -30,6 +31,7 @@ namespace crt
         Queue<uint32_t, 10> signalQueue;
         Queue<uint32_t, 10> pauseQueue;
         State state;
+        Display& display;
 
         uint32_t t_signalUs;
         uint32_t t_pauseUs;
@@ -43,11 +45,12 @@ namespace crt
         uint8_t byte1, byte2, byte3, byte4;
 
 	public:
-		NecReceiver(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber) :	
+		NecReceiver(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display &display) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             signalQueue(this),
             pauseQueue(this),
-            state(STATE_WAITING_FOR_LEAD_SIGNAL)
+            state(STATE_WAITING_FOR_LEAD_SIGNAL),
+            display(display)
 		{
 			start();
 		}
@@ -95,7 +98,6 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_LEAD_SIGNAL:
-                    ESP_LOGI("wait", "Waiting for signal.");
                     signalQueue.read(t_signalUs);
                     if((t_signalUs > T_LEADSIGNAL_MIN_US) && (t_signalUs < T_LEADSIGNAL_MAX_US)) {
                         state = STATE_WAITING_FOR_LEAD_PAUSE;
@@ -141,6 +143,7 @@ namespace crt
                         logger.logText("Sent message to console.");
                         logger.logText("Changed state to Waiting For Lead Signal.");
                         // Send message to clock controller.
+                        display.drawInt(byte3);
                     }
                     break;
                 

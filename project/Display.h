@@ -15,8 +15,6 @@
 
 // This file contains the code of multiple tasks that run concurrently and notify eachother using flags.
 
-#define T_MAX_PAUSE_US 6000
-
 namespace crt
 {
 	extern ILogger& logger;
@@ -33,7 +31,7 @@ namespace crt
         Queue<uint8_t, 5> intQueue;
         uint8_t intToBeDisplayed;
 
-        Adafruit_SSD1306 display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+        Adafruit_SSD1306 display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);;
 
 	public:
 		Display(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber) :	
@@ -42,11 +40,6 @@ namespace crt
             intQueue(this),
             intToBeDisplayed(0)
 		{
-            //Wire.begin(6, 7);
-            if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-                Serial.println(F("SSD1306 allocation failed"));
-                // for(;;); // Don't proceed, loop forever
-            }
 			start();
 		}
 
@@ -56,17 +49,25 @@ namespace crt
 
 	private:
         void drawNumber() {
-            display.clearDisplay();
-            display.setTextSize(1);
+            display.setTextSize(3);
+            display.setTextColor(WHITE);
             display.setCursor(0,8);
             display.println(intToBeDisplayed);
             display.display();
+            vTaskDelay(200);
+            display.clearDisplay();
         }
 
 		/*override keyword not supported*/
 		void main()
 		{
 			vTaskDelay(1000); // wait for other threads to have started up as well.
+
+            if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+                    Serial.println(F("SSD1306 allocation failed"));
+                    ESP_LOGI("dispayFailure", "failed to init display.");
+                }
+            display.clearDisplay();
 
 			while (true)
 			{
@@ -76,6 +77,7 @@ namespace crt
                     wait(intQueue);
                     intQueue.read(intToBeDisplayed);
                     drawNumber();
+                    ESP_LOGI("display", "written to display");
                     break;
                 
                 default:

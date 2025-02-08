@@ -77,7 +77,7 @@ namespace crt
         }
 
         void splitIntoHexBytes(uint32_t value) {
-            byte1 = (value >> 24) >> 0xFF;
+            byte1 = (value >> 24) & 0xFF;
             byte2 = (value >> 16) & 0xFF;
             byte3 = (value >> 8)  & 0xFF;
             byte4 = value & 0xFF;

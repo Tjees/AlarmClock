@@ -28,7 +28,12 @@ namespace crt
 crt::SignalPauseDetector* crt::SignalPauseDetector::instance = nullptr;
 
 void IRAM_ATTR isrHandler(void* args) {
-	crt::pauseDetector.signalFlag.setFromISR();
+	if(gpio_get_level(GPIO_NUM_11) == LOW) {
+		crt::pauseDetector.signalFlag.setFromISR();
+	}
+	else {
+		crt::pauseDetector.pauseFlag.setFromISR();
+	}
 }
 
 void setup()
@@ -39,7 +44,7 @@ void setup()
 
 	// Configure GPIO for interrupt (example with pin 11)
     gpio_config_t io_conf = {};
-    io_conf.intr_type = GPIO_INTR_NEGEDGE;  // Trigger on falling edge
+    io_conf.intr_type = GPIO_INTR_ANYEDGE;  // Trigger on falling edge
     io_conf.pin_bit_mask = (1ULL << 11);    // Pin 11 for the GPIO interrupt
     io_conf.mode = GPIO_MODE_INPUT;
 	io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
@@ -48,7 +53,7 @@ void setup()
     
     // Install ISR service and attach the handler
     gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
-    gpio_isr_handler_add((gpio_num_t)11, isrHandler, (void*) (gpio_num_t)11);
+    gpio_isr_handler_add(GPIO_NUM_11, isrHandler, (void*) GPIO_NUM_11);
 
 	vTaskDelay(10);// allow tasks to initialize.
 	ESP_LOGI("checkpoint", "start of main");

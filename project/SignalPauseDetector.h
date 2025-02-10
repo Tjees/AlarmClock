@@ -30,20 +30,26 @@ namespace crt
         uint32_t t_signalUs;
         uint32_t t_pauseUs;
 
+        uint32_t t_startTime;
+        uint32_t t_stopTime;
+
         NecReceiver& necReceiver;
         TsopReceiver tsopReceiver = TsopReceiver(11);
 
 	public:
         static crt::SignalPauseDetector* instance;
         Flag signalFlag;
+        Flag pauseFlag;
 
 		SignalPauseDetector(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, NecReceiver& necReceiver) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             timer(this),
-            state(STATE_WAITING_FOR_PAUSE),
+            state(STATE_WAITING_FOR_SIGNAL),
             t_signalUs(0),
+            t_startTime(0),
             necReceiver(necReceiver),
-            signalFlag(this)
+            signalFlag(this),
+            pauseFlag(this)
 		{
             instance = this;
 			start();
@@ -69,42 +75,24 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_PAUSE:
-                    wait(signalFlag);
-                    timer.sleep_us(100);
-                    //delayMicroseconds(100);
-                    if(tsopReceiver.isSignalPresent()) {
-                        t_signalUs += 100;
-                        signalFlag.set();
-                        // ESP_LOGI("increase", "increased signal us.");
-                        // ESP_LOGI("signal","%lu",t_signalUs);
-                    }
-                    else {
-                        necReceiver.signalDetected(t_signalUs);
-                        t_pauseUs = 0;
-                        state = STATE_WAITING_FOR_SIGNAL;
-                        logger.logUint32(t_signalUs);
-                    }
+                    wait(pauseFlag);
+                    t_stopTime = esp_timer_get_time();
+                    necReceiver.signalDetected(t_stopTime - t_startTime);
+                    timer.start(6000);
+                    t_startTime = esp_timer_get_time();
+                    state = STATE_WAITING_FOR_SIGNAL;
                     break;
 
                 case STATE_WAITING_FOR_SIGNAL:
-                    timer.sleep_us(100);
-                    //delayMicroseconds(100);
-                    if(!tsopReceiver.isSignalPresent()) {
-                        t_pauseUs += 100;
-                        if(t_pauseUs > T_MAX_PAUSE_US) {
-                            necReceiver.pauseDetected(t_pauseUs);
-                            t_pauseUs = 0;
-                            signalFlag.clear();
-                            state = STATE_WAITING_FOR_PAUSE;
-                            
-                        }
-                    }
-                    else {
-                        necReceiver.pauseDetected(t_pauseUs);
-                        t_signalUs = 0;
-                        signalFlag.set();
+                    waitAny(signalFlag + timer);
+                    if(hasFired(signalFlag)) {
+                        t_stopTime = esp_timer_get_time();
+                        necReceiver.pauseDetected(t_stopTime - t_startTime);
+                        t_startTime = esp_timer_get_time();
                         state = STATE_WAITING_FOR_PAUSE;
-                        // logger.logText("Changed state since pause detected.");
+                    }
+                    else if(hasFired(timer)) {
+                        necReceiver.pauseDetected(T_MAX_PAUSE_US);
                     }
                     break;
                 

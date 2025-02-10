@@ -5,6 +5,7 @@
 #include "NecReceiver.h"
 #include "TsopReceiver.h"
 #include "crt_FromArduinoIde.h"
+#include "freertos/event_groups.h"
 
 // This file contains the code of multiple tasks that run concurrently and notify eachother using flags.
 
@@ -33,15 +34,27 @@ namespace crt
         TsopReceiver tsopReceiver = TsopReceiver(11);
 
 	public:
+        static crt::SignalPauseDetector* instance;
+        Flag signalFlag;
+
 		SignalPauseDetector(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, NecReceiver& necReceiver) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             timer(this),
             state(STATE_WAITING_FOR_PAUSE),
             t_signalUs(0),
-            necReceiver(necReceiver)
+            necReceiver(necReceiver),
+            signalFlag(this)
 		{
+            instance = this;
 			start();
 		}
+
+        // static IRAM_ATTR void setSignalFlag(void* args) {
+        //     if(instance) {
+        //         instance -> t_signalUs = 100;
+        //     }
+        //     portYIELD_FROM_ISR();
+        // }
 
 	private:
 		/*override keyword not supported*/
@@ -56,10 +69,12 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_PAUSE:
+                    wait(signalFlag);
                     timer.sleep_us(100);
                     //delayMicroseconds(100);
                     if(tsopReceiver.isSignalPresent()) {
                         t_signalUs += 100;
+                        signalFlag.set();
                         // ESP_LOGI("increase", "increased signal us.");
                         // ESP_LOGI("signal","%lu",t_signalUs);
                     }
@@ -79,11 +94,15 @@ namespace crt
                         if(t_pauseUs > T_MAX_PAUSE_US) {
                             necReceiver.pauseDetected(t_pauseUs);
                             t_pauseUs = 0;
+                            signalFlag.clear();
+                            state = STATE_WAITING_FOR_PAUSE;
+                            
                         }
                     }
                     else {
                         necReceiver.pauseDetected(t_pauseUs);
                         t_signalUs = 0;
+                        signalFlag.set();
                         state = STATE_WAITING_FOR_PAUSE;
                         // logger.logText("Changed state since pause detected.");
                     }
@@ -92,9 +111,10 @@ namespace crt
                 default:
                     break;
                 }
+
+                taskYIELD();
+                // vTaskDelay(1);
 			}
-            
-            taskYIELD();
 		}
 	}; // end class BallControl
 

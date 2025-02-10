@@ -73,9 +73,25 @@ namespace crt
             return &hEventGroup;
         }
 
+        EventGroupHandle_t getEventGroupHandler()
+        {
+            return hEventGroup;
+        }
+
         inline void setEventBits(const EventBits_t uxBitsToSet)
         {
             xEventGroupSetBits(hEventGroup,uxBitsToSet);
+        }
+
+        inline void setEventBitsFromISR(const EventBits_t uxBitsToSet)
+        {
+            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+
+            xEventGroupSetBitsFromISR(hEventGroup,uxBitsToSet,&xHigherPriorityTaskWoken);
+
+            if (xHigherPriorityTaskWoken == pdTRUE) {
+                portYIELD_FROM_ISR();
+            }
         }
 
         inline void clearEventBits(const EventBits_t uxBitsToClear)

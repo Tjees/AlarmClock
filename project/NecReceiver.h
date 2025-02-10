@@ -61,12 +61,12 @@ namespace crt
                 pauseQueue.clear();
             }
             signalQueue.write(t_Us);
-            //ESP_LOGI("signal","%lu",t_Us);
+            // ESP_LOGI("signal","%lu",t_Us);
         }
 
         void pauseDetected(uint32_t t_Us) {
             pauseQueue.write(t_Us);
-            //ESP_LOGI("pause","%lu",t_Us);
+            // ESP_LOGI("pause","%lu",t_Us);
         }
 
 	private:
@@ -151,8 +151,8 @@ namespace crt
                     break;
                 }
 
-                // vTaskDelay(1);
-                taskYIELD();
+                vTaskDelay(1);
+                //taskYIELD();
 			}
 		}
 	}; // end class BallControl

@@ -36,6 +36,8 @@ namespace crt
         Task* pTask;
 
 	public:
+        bool hasEnded;
+
         Timer(Task* pTask):Waitable(WaitableType::wt_Timer), pTask(pTask)
 		{
             Waitable::init(pTask->queryBitNumber(this));	// This will cause the bitmask of Waitable to be set properly.
@@ -74,10 +76,12 @@ namespace crt
         inline void stop()
         {
             esp_timer_stop(hTimer);
+            hasEnded = true;
         }
 
         inline void start(uint64_t duration_us)
         {
+            hasEnded = false;
             assert(duration_us >= 50);                      // assert against bad design
             if (esp_timer_is_active(hTimer))
             {
@@ -88,6 +92,7 @@ namespace crt
 
         inline void start_periodic(uint64_t period_us)
         {
+            hasEnded = false;
             assert(period_us >= 50);                        // assert against bad design
             if (esp_timer_is_active(hTimer))
             {
@@ -105,6 +110,7 @@ namespace crt
 		inline void timer_callback(uint32_t bitMask)
 		{
             pTask->setEventBits(bitMask);
+            hasEnded = true;
 
             // Resumingly, this is how it works ( I think :-) ):
             // The timer generates a hardware interrupt.

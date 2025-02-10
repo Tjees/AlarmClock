@@ -27,6 +27,11 @@ namespace crt
             pTask->setEventBits(Waitable::getBitMask());
         }
 
+        void setFromISR()
+        {
+            pTask->setEventBitsFromISR(Waitable::getBitMask());
+        }
+
 		void clear()
 		{
 			pTask->clearEventBits(Waitable::getBitMask());

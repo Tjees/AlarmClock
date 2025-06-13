@@ -8,6 +8,8 @@
 #include "SignalPauseDetector.h"
 #include "NecReceiver.h"
 #include "Display.h"
+#include "OperationControl.h"
+#include "prj_Time.h"
 
 namespace crt
 {
@@ -19,9 +21,14 @@ namespace crt
 
     MainInits mainInits;            // Initialize CleanRTOS.
     
+	prj_Time test_time;
+
 	Display oled("Display", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
-    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled);
+	Mutex oledMutex(1);
+	
+    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex);
     SignalPauseDetector pauseDetector("PauseDetector", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, necReceiver);
+	OperationControl operationControl("OperationControl", 2 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, test_time);
 }
 
 // Set up ISR class instances.

@@ -32,6 +32,7 @@ namespace crt
         Queue<uint32_t, 10> pauseQueue;
         State state;
         Display& display;
+        Mutex& oledMutex;
 
         uint32_t t_signalUs;
         uint32_t t_pauseUs;
@@ -45,12 +46,13 @@ namespace crt
         uint8_t byte1, byte2, byte3, byte4;
 
 	public:
-		NecReceiver(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display &display) :	
+		NecReceiver(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display &display, Mutex& oledMutex) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             signalQueue(this),
             pauseQueue(this),
             state(STATE_WAITING_FOR_LEAD_SIGNAL),
-            display(display)
+            display(display),
+            oledMutex(oledMutex)
 		{
 			start();
 		}
@@ -142,8 +144,17 @@ namespace crt
 
                         logger.logText("Sent message to console.");
                         logger.logText("Changed state to Waiting For Lead Signal.");
-                        // Send message to clock controller.
-                        display.drawInt(byte3);
+
+                        // Geef byte3 door aan instelcontrol queue. 
+                        if(byte3 == 162){
+                            display.drawMenu(byte3);
+                        }
+                        else if(byte3 == 98) {
+                            display.drawMenu(byte3);
+                        }
+                        else{
+                            display.drawInt(byte3);
+                        }
                     }
                     break;
                 

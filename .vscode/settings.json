@@ -4,7 +4,7 @@
     "idf.openOcdConfigs": [
         "board/esp32c6-ftdi.cfg"
     ],
-    "idf.portWin": "COM8",
+    "idf.portWin": "COM6",
     "idf.toolsPathWin": "C:\\Users\\tjezv\\.espressif",
     "idf.flashType": "UART"
 }

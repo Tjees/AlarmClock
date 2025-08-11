@@ -68,33 +68,33 @@ namespace crt
 
 	private:
         void drawNumber() {
+            display.clearDisplay();
+
             display.setTextSize(3);
             display.setTextColor(WHITE);
             display.setCursor(0,8);
             display.println(intToBeDisplayed);
             display.display();
-            vTaskDelay(200);
-            display.clearDisplay();
         }
 
         void drawString() {
+            display.clearDisplay();
+
             display.setTextSize(2);
             display.setTextColor(WHITE);
             display.setCursor(0,8);
             display.println(stringToBeDisplayed);
             display.display();
-            vTaskDelay(200);
-            display.clearDisplay();
         }
 
         void drawMenu() {
+            display.clearDisplay();
+
             display.setTextSize(2);
             display.setTextColor(WHITE);
             display.setCursor(0,8);
             display.println("===MENU===");
             display.display();
-            vTaskDelay(200);
-            display.clearDisplay();
         }
 
 		/*override keyword not supported*/
@@ -125,29 +125,33 @@ namespace crt
                     else if(hasFired(messageQueue)) {
                         messageQueue.read(message);
                         if(message == 162) {
+                            drawMenu();
                             state = STATE_MENU;
                         }
                     }
-                    // ESP_LOGI("display", "written to display");
+                    intQueue.clear();
+                    stringQueue.clear();
+                    messageQueue.clear();
+                    ESP_LOGI("display", "written to display");
                     break;
                 
                 case STATE_MENU:
-                    if(message == 98) {
-                        intQueue.clear();
-                        stringQueue.clear();
-                        messageQueue.clear();
-                        state = STATE_IDLE;
-                    }
-                    drawMenu();
                     wait(messageQueue);
                     ESP_LOGI("display", "quit menu");
                     messageQueue.read(message);
+                    if(message == 98) {
+                        state = STATE_IDLE;
+                    }
+                    intQueue.clear();
+                    stringQueue.clear();
+                    messageQueue.clear();
                 
                 default:
                     break;
                 }
 
-                taskYIELD();
+                vTaskDelay(200);
+                // taskYIELD();
 		    }
 	    }; // end class BallControl
     };

@@ -78,6 +78,7 @@ namespace crt
                     }
                     else if(byte == 56) {
                         currentTime.setTime(editTime.getTime());
+                        state = WAITING_FOR_MESSAGE;
                         return 1; // this tells the caller to return to the main menu.
                     }
                     else if(byte == 16) {
@@ -103,6 +104,7 @@ namespace crt
                     }
                     else if(byte == 56) {
                         currentTime.setTime(editTime.getTime());
+                        state = WAITING_FOR_MESSAGE;
                         return 1; // this tells the caller to return to the main menu.
                     }
                     else if(byte == 90) {

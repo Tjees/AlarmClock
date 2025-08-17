@@ -7,6 +7,7 @@
 #include "Display.h"
 #include "prj_Time.h"
 #include "TijdInstelControl.h"
+#include "AlarmInstelControl.h"
 
 // This file contains the code of multiple tasks that run concurrently and notify eachother using flags.
 
@@ -39,13 +40,17 @@ namespace crt
         // flag etc.
         Timer timer;
         Display &display;
+
         prj_Time &time;
+        prj_Time &alarm;
+
         uint32_t buzzTime;
 
         TijdInstelControl tijdInstelControl;
+        AlarmInstelControl alarmInstelControl;
 
 	public:
-        InstelControl(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display& display, prj_Time &time) :	
+        InstelControl(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display& display, prj_Time &time, prj_Time &alarm) :	
             Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             state(WAITING_FOR_MESSAGE),
             messageQueue(this),
@@ -53,8 +58,10 @@ namespace crt
             timer(this),
             display(display),
             time(time),
+            alarm(alarm),
             buzzTime(0),
-            tijdInstelControl(this, display, time, messageQueue)
+            tijdInstelControl(this, display, time, messageQueue),
+            alarmInstelControl(this, display, alarm, messageQueue)
 		{
 			start();
 		}
@@ -111,7 +118,6 @@ namespace crt
                     break;
 
                 case TIME_SETTING_MENU: {
-                    // Call Time_SettingMenu here.
                     int response = tijdInstelControl.ChangeTimeSetting();
                     if(response == 1) {
                         display.closeMenu();
@@ -120,9 +126,14 @@ namespace crt
                     break;
                 }
 
-                case ALARM_SETTING_MENU:
-                    // Call Alarm_SettingMenu here.
+                case ALARM_SETTING_MENU: {
+                    int response = alarmInstelControl.ChangeAlarmSetting();
+                    if(response == 1) {
+                        display.closeMenu();
+                        state = WAITING_FOR_MESSAGE;
+                    }
                     break;
+                }
                 
                 default:
                     break;

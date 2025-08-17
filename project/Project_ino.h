@@ -11,6 +11,7 @@
 #include "OperationControl.h"
 #include "prj_Time.h"
 #include "InstelControl.h"
+#include "Buzzer.h"
 
 namespace crt
 {
@@ -22,15 +23,18 @@ namespace crt
 
     MainInits mainInits;            // Initialize CleanRTOS.
     
-	prj_Time test_time;
+	prj_Time systemTime;
+	prj_Time alarmTime;
 
 	Display oled("Display", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
 	Mutex oledMutex(1);
+
+	Buzzer buzzer("Buzzer", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, GPIO_NUM_12);
 	
-	InstelControl instelControl("InstelControl", 2 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, test_time);
+	InstelControl instelControl("InstelControl", 2 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, systemTime, alarmTime);
     NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, instelControl);
     SignalPauseDetector pauseDetector("PauseDetector", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, necReceiver);
-	OperationControl operationControl("OperationControl", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, test_time);
+	OperationControl operationControl("OperationControl", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, buzzer, systemTime, alarmTime);
 }
 
 // Set up ISR class instances.
@@ -50,6 +54,8 @@ void setup()
 	// initialize serial communication at 115200 bits per second:
 	Serial.begin(115200);    // Only needed when using Serial.print();
 	Wire.begin(6, 7);
+
+	pinMode(GPIO_NUM_12, OUTPUT);
 
 	// Configure GPIO for interrupt (example with pin 11)
     gpio_config_t io_conf = {};

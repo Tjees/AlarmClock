@@ -6,6 +6,7 @@
 #include "freertos/event_groups.h"
 #include "Display.h"
 #include "prj_Time.h"
+#include "Buzzer.h"
 
 // This file contains the code of multiple tasks that run concurrently and notify eachother using flags.
 
@@ -28,20 +29,23 @@ namespace crt
 
         // flag etc.
         Timer timer;
-        Display &display;
+        Display& display;
         Mutex& oledMutex;
+        Buzzer& buzzer;
+
         prj_Time &time;
-        uint32_t buzzTime;
+        prj_Time &alarm;
 
 	public:
-		OperationControl(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display& display, Mutex& oledMutex, prj_Time &time) :	
+		OperationControl(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display& display, Mutex& oledMutex, Buzzer& buzzer, prj_Time &time, prj_Time &alarm) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             state(STATE_UPDATE_TIME),
             timer(this),
             display(display),
             oledMutex(oledMutex),
+            buzzer(buzzer),
             time(time),
-            buzzTime(0)
+            alarm(alarm)
 		{
 			start();
 		}
@@ -52,6 +56,7 @@ namespace crt
 		{
 			vTaskDelay(1000); // wait for other threads to have started up as well.
 
+            timer.start_periodic(1000000); // 1 second timer.
 			while (true)
 			{
 				// dumpStackHighWaterMarkIfIncreased(); 		// This function call takes about 0.25ms! It should be called while debugging only.
@@ -59,25 +64,27 @@ namespace crt
 				switch (state)
                 {
                 case STATE_UPDATE_TIME:
-                    if(false) {
+                    wait(timer); // changed to timer interrupt, now the alarm state can set the buzzer, go back and hopefully not miss the next timer interrupt. ( or the state takes longer than one second but then that is that... although setting a flag doesnt take nearly as much time as the timer callback does, so it should be fine. )
+                    time.increaseTime();
+                    display.showCurrentTime(time.getPrintableTime());
+                    if(alarm.getTime() == time.getTime()) {
                         state = STATE_SOUND_ALARM;
                     }
                     else {
-                        time.increaseTime();
-                        display.showCurrentTime(time.getPrintableTime());
+                        state = STATE_UPDATE_TIME;
                     }
                     break;
 
                 case STATE_SOUND_ALARM:
-                    // Set buzzer flag here.
+                    buzzer.makeSound();
+                    state = STATE_UPDATE_TIME;
                     break;
                 
                 default:
                     break;
                 }
 
-                //taskYIELD();
-                vTaskDelay(1000); // wait 1 second.
+                taskYIELD();
 			}
 		}
 	}; // end class BallControl

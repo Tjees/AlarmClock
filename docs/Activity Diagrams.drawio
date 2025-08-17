@@ -1,0 +1,181 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36" version="28.1.0">
+  <diagram name="Pagina-1" id="H9jOT3OtpwcI2Au9NHdp">
+    <mxGraphModel dx="2657" dy="803" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-1" value="Operationele Taken Uitvoeren" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-210" y="40" width="610" height="470" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-1" source="d7-MQRUGQjEXvLSJ_vUg-5" target="d7-MQRUGQjEXvLSJ_vUg-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-5" value="" style="ellipse;fillColor=strokeColor;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-1">
+          <mxGeometry x="155" y="70" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-6" value="Show current time on display." style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-1">
+          <mxGeometry x="110" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-1" source="d7-MQRUGQjEXvLSJ_vUg-9" target="d7-MQRUGQjEXvLSJ_vUg-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-9" value="Timer went off." style="html=1;shape=mxgraph.infographic.ribbonSimple;notch1=20;notch2=0;align=center;verticalAlign=middle;fontSize=14;fontStyle=0;flipH=1;fillColor=#FFFFFF;whiteSpace=wrap;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-1">
+          <mxGeometry x="90" y="260" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=80;entryDy=0;entryPerimeter=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-1" source="d7-MQRUGQjEXvLSJ_vUg-6" target="d7-MQRUGQjEXvLSJ_vUg-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-1" source="d7-MQRUGQjEXvLSJ_vUg-11" target="d7-MQRUGQjEXvLSJ_vUg-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-15" value="Time is equal to alarm?" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="d7-MQRUGQjEXvLSJ_vUg-14">
+          <mxGeometry x="-0.284" relative="1" as="geometry">
+            <mxPoint x="19" y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-11" value="Increase time with one second." style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-1">
+          <mxGeometry x="110" y="340" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-1" source="d7-MQRUGQjEXvLSJ_vUg-13" target="d7-MQRUGQjEXvLSJ_vUg-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-21" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="d7-MQRUGQjEXvLSJ_vUg-17">
+          <mxGeometry x="-0.767" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-1" source="d7-MQRUGQjEXvLSJ_vUg-13" target="d7-MQRUGQjEXvLSJ_vUg-19">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="520" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-22" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="d7-MQRUGQjEXvLSJ_vUg-18">
+          <mxGeometry x="-0.6625" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-13" value="" style="rhombus;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-1">
+          <mxGeometry x="380" y="342.5" width="60" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-1" source="d7-MQRUGQjEXvLSJ_vUg-19" target="d7-MQRUGQjEXvLSJ_vUg-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-19" value="Make sound using buzzer." style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-1">
+          <mxGeometry x="460" y="230" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-2" value="Instellingen Aanpassen" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="40" width="870" height="470" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-23" value="" style="ellipse;fillColor=strokeColor;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="160" y="70" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-25" target="d7-MQRUGQjEXvLSJ_vUg-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-25" value="Settings signal is received." style="html=1;shape=mxgraph.infographic.ribbonSimple;notch1=20;notch2=0;align=center;verticalAlign=middle;fontSize=14;fontStyle=0;flipH=1;fillColor=#FFFFFF;whiteSpace=wrap;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="95" y="150" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=80;entryDy=0;entryPerimeter=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-23" target="d7-MQRUGQjEXvLSJ_vUg-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-27" value="Show settings menu on display." style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="115" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-30" target="d7-MQRUGQjEXvLSJ_vUg-38">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="303" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-42" value="Time Setting Button" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="d7-MQRUGQjEXvLSJ_vUg-40">
+          <mxGeometry x="-0.0194" y="2" relative="1" as="geometry">
+            <mxPoint y="-11" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-30" target="d7-MQRUGQjEXvLSJ_vUg-39">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-43" value="Alarm Setting Button" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="d7-MQRUGQjEXvLSJ_vUg-41">
+          <mxGeometry x="-0.4289" y="-1" relative="1" as="geometry">
+            <mxPoint x="25" y="9" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-30" value="" style="rhombus;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="350" y="332.5" width="60" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0;exitDx=20;exitDy=20;exitPerimeter=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-35" target="d7-MQRUGQjEXvLSJ_vUg-30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-35" value="Signal is received." style="html=1;shape=mxgraph.infographic.ribbonSimple;notch1=20;notch2=0;align=center;verticalAlign=middle;fontSize=14;fontStyle=0;flipH=1;fillColor=#FFFFFF;whiteSpace=wrap;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="95" y="340" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=80;entryDy=0;entryPerimeter=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-27" target="d7-MQRUGQjEXvLSJ_vUg-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-38" target="d7-MQRUGQjEXvLSJ_vUg-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-38" value="Open time settings menu" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="490" y="272.5" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-39" target="d7-MQRUGQjEXvLSJ_vUg-44">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-39" value="Open alarm settings menu." style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="490" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-44" target="d7-MQRUGQjEXvLSJ_vUg-47">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="800" y="360" />
+              <mxPoint x="800" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-44" value="" style="rhombus;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="680" y="332.5" width="60" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-47" value="Show current time on display." style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-2">
+          <mxGeometry x="490" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-49" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=20;entryDy=20;entryPerimeter=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-2" source="d7-MQRUGQjEXvLSJ_vUg-47" target="d7-MQRUGQjEXvLSJ_vUg-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-3" value="Tijd instellen" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" vertex="1" parent="1">
+          <mxGeometry x="-210" y="560" width="610" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-4" value="s" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="560" width="870" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-52" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-4" source="d7-MQRUGQjEXvLSJ_vUg-50" target="d7-MQRUGQjEXvLSJ_vUg-51">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-50" value="" style="ellipse;fillColor=strokeColor;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-4">
+          <mxGeometry x="130" y="70" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-51" value="Show current alarm time on display." style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-4">
+          <mxGeometry x="85" y="150" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-53" value="Settings button is pressed." style="html=1;shape=mxgraph.infographic.ribbonSimple;notch1=20;notch2=0;align=center;verticalAlign=middle;fontSize=14;fontStyle=0;flipH=1;fillColor=#FFFFFF;whiteSpace=wrap;" vertex="1" parent="d7-MQRUGQjEXvLSJ_vUg-4">
+          <mxGeometry x="65" y="260" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="d7-MQRUGQjEXvLSJ_vUg-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0;entryDx=80;entryDy=0;entryPerimeter=0;" edge="1" parent="d7-MQRUGQjEXvLSJ_vUg-4" source="d7-MQRUGQjEXvLSJ_vUg-51" target="d7-MQRUGQjEXvLSJ_vUg-53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

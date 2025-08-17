@@ -59,30 +59,25 @@ namespace crt
 				switch (state)
                 {
                 case STATE_UPDATE_TIME:
-                    vTaskDelay(1000);
                     if(false) {
                         state = STATE_SOUND_ALARM;
                     }
                     else {
                         time.increaseTime();
-                        display.drawString(time.getPrintableTime());
+                        display.showCurrentTime(time.getPrintableTime());
                     }
                     break;
 
                 case STATE_SOUND_ALARM:
-                    timer.sleep_us(500);
-                    buzzTime += 500;
-                    if(buzzTime == 3000000) {
-                        state = STATE_UPDATE_TIME;
-                    }
+                    // Set buzzer flag here.
                     break;
                 
                 default:
                     break;
                 }
 
-                // taskYIELD();
-                // vTaskDelay(1000); // wait 1 second.
+                //taskYIELD();
+                vTaskDelay(1000); // wait 1 second.
 			}
 		}
 	}; // end class BallControl

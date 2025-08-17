@@ -10,6 +10,7 @@
 #include "Display.h"
 #include "OperationControl.h"
 #include "prj_Time.h"
+#include "InstelControl.h"
 
 namespace crt
 {
@@ -26,9 +27,10 @@ namespace crt
 	Display oled("Display", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
 	Mutex oledMutex(1);
 	
-    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex);
+	InstelControl instelControl("InstelControl", 2 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, test_time);
+    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, instelControl);
     SignalPauseDetector pauseDetector("PauseDetector", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, necReceiver);
-	OperationControl operationControl("OperationControl", 2 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, test_time);
+	OperationControl operationControl("OperationControl", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, test_time);
 }
 
 // Set up ISR class instances.

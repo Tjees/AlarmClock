@@ -3,6 +3,7 @@
 #pragma once
 #include <crt_CleanRTOS.h>
 #include "crt_FromArduinoIde.h"
+#include "prj_Time.h"
 
 #include <SPI.h>
 #include <Wire.h>
@@ -23,67 +24,61 @@ namespace crt
 	{
         enum State
         {
-            STATE_IDLE,
-            STATE_MENU
+            WAITING_FOR_EVENT,
+            DRAW_TIME,
+            DRAW_MENU,
+            DRAW_EDIT_TIME
         };
 
 	private:
         State state;
-        Queue<uint8_t, 5> intQueue;
-        Queue<const char*, 5> stringQueue;
-        Queue<uint8_t, 5> messageQueue;
 
-        uint8_t intToBeDisplayed;
-        const char* stringToBeDisplayed;
-        uint8_t message;
-        Timer timer;
+        Queue<String, 1> currentTimeChannel;
+        Queue<String, 1> editTimeChannel;
+        Flag showMenuFlag;
+        Flag closeMenuFlag;
 
-        Adafruit_SSD1306 display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);;
+        String currentTime;
+        String editTime;
+
+        Adafruit_SSD1306 display = Adafruit_SSD1306(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 	public:
 		Display(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
-            state(STATE_IDLE),
-            intQueue(this),
-            stringQueue(this),
-            messageQueue(this),
-            intToBeDisplayed(0),
-            stringToBeDisplayed("00:00:00"),
-            timer(this)
+            state(WAITING_FOR_EVENT),
+            currentTimeChannel(this),
+            editTimeChannel(this),
+            showMenuFlag(this),
+            closeMenuFlag(this)
 		{
 			start();
 		}
 
-        void drawInt(uint8_t i) {
-            intQueue.write(i);
-        } 
-
-        void drawString(const char* s) {
-            stringQueue.write(s);
-        } 
-
-        void drawMenu(uint8_t i) {
-            messageQueue.write(i);
-        } 
-
-	private:
-        void drawNumber() {
-            display.clearDisplay();
-
-            display.setTextSize(3);
-            display.setTextColor(WHITE);
-            display.setCursor(0,8);
-            display.println(intToBeDisplayed);
-            display.display();
+        void showCurrentTime(String time) {
+            currentTimeChannel.write(time);
         }
 
-        void drawString() {
+        void showEditTime(String time) {
+            editTimeChannel.write(time);
+        }
+
+        void showMenu() {
+            showMenuFlag.set();
+        }
+
+        void closeMenu() {
+            closeMenuFlag.set();
+        }
+
+	private:
+        void drawString(String string) {
             display.clearDisplay();
 
             display.setTextSize(2);
             display.setTextColor(WHITE);
             display.setCursor(0,8);
-            display.println(stringToBeDisplayed);
+            display.println(string);
             display.display();
         }
 
@@ -94,6 +89,8 @@ namespace crt
             display.setTextColor(WHITE);
             display.setCursor(0,8);
             display.println("===MENU===");
+            display.println("1. Set time");
+            display.println("2. Set alarm");
             display.display();
         }
 
@@ -112,46 +109,52 @@ namespace crt
 			{
 				switch (state)
                 {
-                case STATE_IDLE:
-                    waitAny(intQueue + stringQueue + messageQueue);
-                    if(hasFired(intQueue)) {
-                        intQueue.read(intToBeDisplayed);
-                        drawNumber();
+                case WAITING_FOR_EVENT:
+                    waitAny(currentTimeChannel + showMenuFlag);
+                    if(hasFired(currentTimeChannel)) {
+                        currentTimeChannel.read(currentTime);
+                        state = DRAW_TIME;
                     }
-                    else if(hasFired(stringQueue)) {
-                        stringQueue.read(stringToBeDisplayed);
-                        drawString();
+                    else if(hasFired(showMenuFlag)) {
+                        state = DRAW_MENU;
                     }
-                    else if(hasFired(messageQueue)) {
-                        messageQueue.read(message);
-                        if(message == 162) {
-                            drawMenu();
-                            state = STATE_MENU;
-                        }
-                    }
-                    intQueue.clear();
-                    stringQueue.clear();
-                    messageQueue.clear();
-                    ESP_LOGI("display", "written to display");
+                    
                     break;
                 
-                case STATE_MENU:
-                    wait(messageQueue);
-                    ESP_LOGI("display", "quit menu");
-                    messageQueue.read(message);
-                    if(message == 98) {
-                        state = STATE_IDLE;
+                case DRAW_TIME:
+                    drawString(currentTime);
+                    state = WAITING_FOR_EVENT;
+                    break;
+
+                case DRAW_MENU:
+                    drawMenu();
+                    waitAny(editTimeChannel + closeMenuFlag);
+                    if(hasFired(editTimeChannel)) {
+                        editTimeChannel.read(editTime);
+                        state = DRAW_EDIT_TIME;
                     }
-                    intQueue.clear();
-                    stringQueue.clear();
-                    messageQueue.clear();
+                    else if(hasFired(closeMenuFlag)) {
+                        state = WAITING_FOR_EVENT;
+                    }
+                    break;
+
+                case DRAW_EDIT_TIME:
+                    drawString(editTime);
+                    waitAny(editTimeChannel + closeMenuFlag);
+                    if(hasFired(editTimeChannel)) {
+                        editTimeChannel.read(editTime);
+                        state = DRAW_EDIT_TIME;
+                    }
+                    else if(hasFired(closeMenuFlag)) {
+                        state = WAITING_FOR_EVENT;
+                    }
+                    break;
                 
                 default:
                     break;
                 }
 
-                vTaskDelay(200);
-                // taskYIELD();
+                taskYIELD();
 		    }
 	    }; // end class BallControl
     };

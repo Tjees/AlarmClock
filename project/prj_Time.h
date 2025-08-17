@@ -13,6 +13,16 @@ class prj_Time {
         prj_Time(): hours(0), minutes(0), seconds(0) {
         }
 
+    void setTime(std::array<uint8_t, 3> time) {
+        hours = time[0];
+        minutes = time[1];
+        seconds = time[2];
+    }
+
+    std::array<uint8_t, 3> getTime() {
+        return {hours, minutes, seconds};
+    }
+
     // Bleh maar oke.
     void increaseTime() {
         seconds += 1;
@@ -29,6 +39,25 @@ class prj_Time {
         }
     }
 
+    void increaseMinutes() {
+        minutes += 1;
+        if(minutes > 59) {
+            minutes = 0;
+            hours += 1;
+            if(hours > 23) {
+                hours = 0;
+            }
+        }
+    }
+
+    void increaseHours() {
+        hours += 1;
+        if(hours > 23) {
+            hours = 0;
+        }
+    }
+
+    // This is pure shit change this.
     const char* getPrintableTime() {
         if(hours < 10 && minutes < 10 && seconds < 10) {
             sprintf(str, "0%u:0%u:0%u", hours, minutes, seconds);

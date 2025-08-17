@@ -6,6 +6,7 @@
 #include "freertos/event_groups.h"
 #include "Display.h"
 #include "prj_Time.h"
+#include "TijdInstelControl.h"
 
 // This file contains the code of multiple tasks that run concurrently and notify eachother using flags.
 
@@ -23,13 +24,17 @@ namespace crt
 	{
         enum State
         {
-            STATE_IDLE,
-            STATE_EDITING_MINUTES,
-            STATE_EDITING_HOURS
+            WAITING_FOR_MESSAGE,
+            MENU_OPENED,
+            TIME_SETTING_MENU,
+            ALARM_SETTING_MENU
         };
 
 	private:
         State state;
+
+        Queue<uint8_t, 5> messageQueue;
+        uint8_t byte;
 
         // flag etc.
         Timer timer;
@@ -37,17 +42,30 @@ namespace crt
         prj_Time &time;
         uint32_t buzzTime;
 
+        TijdInstelControl tijdInstelControl;
+
 	public:
         InstelControl(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display& display, prj_Time &time) :	
-			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
-            state(STATE_UPDATE_TIME),
+            Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
+            state(WAITING_FOR_MESSAGE),
+            messageQueue(this),
+            byte(0),
             timer(this),
             display(display),
             time(time),
-            buzzTime(0)
+            buzzTime(0),
+            tijdInstelControl(this, display, time, messageQueue)
 		{
 			start();
 		}
+
+        void MessageReceived(uint8_t byte) {
+            messageQueue.write(byte);
+        }
+
+        Queue<uint8_t, 5>& getMessageQueue() {
+            return messageQueue;
+        }
 
 	private:
 		/*override keyword not supported*/
@@ -61,20 +79,56 @@ namespace crt
 
 				switch (state)
                 {
-                case STATE_IDLE:
-                    vTaskDelay(1000);
+                case WAITING_FOR_MESSAGE:
+                    waitAny(messageQueue);
+                    if(hasFired(messageQueue)) {
+                        messageQueue.read(byte);
+                        if(byte == 2) {
+                            state = MENU_OPENED;
+                        }
+                        else {
+                            state = WAITING_FOR_MESSAGE;
+                        }
+                    }
                     break;
 
-                case STATE_SOUND_ALARM:
-                    vTaskDelay(1000);
+                case MENU_OPENED:
+                    display.showMenu();
+                    waitAny(messageQueue);
+                    if(hasFired(messageQueue)) {
+                        messageQueue.read(byte);
+                        if(byte == 104) {
+                            state = TIME_SETTING_MENU;
+                        }
+                        else if(byte == 176) {
+                            state = ALARM_SETTING_MENU;
+                        }
+                        else {
+                            display.closeMenu();
+                            state = WAITING_FOR_MESSAGE;
+                        }
+                    }
+                    break;
+
+                case TIME_SETTING_MENU: {
+                    // Call Time_SettingMenu here.
+                    int response = tijdInstelControl.ChangeTimeSetting();
+                    if(response == 1) {
+                        display.closeMenu();
+                        state = WAITING_FOR_MESSAGE;
+                    }
+                    break;
+                }
+
+                case ALARM_SETTING_MENU:
+                    // Call Alarm_SettingMenu here.
                     break;
                 
                 default:
                     break;
                 }
 
-                // taskYIELD();
-                // vTaskDelay(1000); // wait 1 second.
+                taskYIELD();
 			}
 		}
 	}; // end class BallControl

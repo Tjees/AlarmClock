@@ -3,6 +3,7 @@
 #pragma once
 #include <crt_CleanRTOS.h>
 #include "Display.h"
+#include "InstelControl.h"
 
 // This file contains the code of multiple tasks that run concurrently and notify eachother using flags.
 
@@ -45,14 +46,17 @@ namespace crt
 
         uint8_t byte1, byte2, byte3, byte4;
 
+        InstelControl& instelControl;
+
 	public:
-		NecReceiver(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display &display, Mutex& oledMutex) :	
+		NecReceiver(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display &display, Mutex& oledMutex, InstelControl& instelControl) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             signalQueue(this),
             pauseQueue(this),
             state(STATE_WAITING_FOR_LEAD_SIGNAL),
             display(display),
-            oledMutex(oledMutex)
+            oledMutex(oledMutex),
+            instelControl(instelControl)
 		{
 			start();
 		}
@@ -146,15 +150,7 @@ namespace crt
                         logger.logText("Changed state to Waiting For Lead Signal.");
 
                         // Geef byte3 door aan instelcontrol queue. 
-                        if(byte3 == 162){
-                            display.drawMenu(byte3);
-                        }
-                        else if(byte3 == 98) {
-                            display.drawMenu(byte3);
-                        }
-                        else{
-                            display.drawInt(byte3);
-                        }
+                        instelControl.MessageReceived(byte3);
                     }
                     break;
                 
@@ -162,8 +158,8 @@ namespace crt
                     break;
                 }
 
-                vTaskDelay(1);
-                //taskYIELD();
+                //vTaskDelay(1);
+                taskYIELD();
 			}
 		}
 	}; // end class BallControl

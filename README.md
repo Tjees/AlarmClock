@@ -1,3 +1,6 @@
+TODO:
+When the IR Receiver is disconnected and then reconnected, it will stop functioning until the device is reset. This is because of the floating ISR line the receiver can be in different states when reconnected if the pin is floating. It can be fixed by having a timer interrupt after each switch that after a set time the state resets ( for example 1000ms ). Secondly the receiver states themselves can be changed so it doesnt hang and finally a pull up resistor can be used ( internally or externally ). Although it should be looked at for now it does not matter since the receiver should be connected at all times anyway and if it disconnects it is treated as a fault/unexpected behaviour and the device should be reset ( with the receiver connected of course ).
+
 Use this to install the Arduino component:
 https://docs.espressif.com/projects/arduino-esp32/en/latest/esp-idf_component.html
 

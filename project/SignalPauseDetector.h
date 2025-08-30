@@ -87,8 +87,6 @@ namespace crt
                         if(t_pauseUs > T_MAX_PAUSE_US) {
                             necReceiver.pauseDetected(t_pauseUs);
                             t_pauseUs = 0;
-                            signalFlag.clear();
-                            state = STATE_WAITING_FOR_PAUSE;
                         }
                     }
                     else {

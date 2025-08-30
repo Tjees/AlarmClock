@@ -27,26 +27,20 @@ namespace crt
 	prj_Time alarmTime;
 
 	Display oled("Display", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE);
-	Mutex oledMutex(1);
 
 	Buzzer buzzer("Buzzer", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, GPIO_NUM_12);
 	
 	InstelControl instelControl("InstelControl", 2 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, systemTime, alarmTime);
-    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, instelControl);
+    NecReceiver necReceiver("NecReceiver", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, instelControl);
     SignalPauseDetector pauseDetector("PauseDetector", 3 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, necReceiver);
-	OperationControl operationControl("OperationControl", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, oledMutex, buzzer, systemTime, alarmTime);
+	OperationControl operationControl("OperationControl", 1 /*priority*/, 5000 /*stack size*/, ARDUINO_RUNNING_CORE, oled, buzzer, systemTime, alarmTime);
 }
 
 // Set up ISR class instances.
 crt::SignalPauseDetector* crt::SignalPauseDetector::instance = nullptr;
 
 void IRAM_ATTR isrHandler(void* args) {
-	if(gpio_get_level(GPIO_NUM_11) == LOW) {
-		crt::pauseDetector.signalFlag.setFromISR();
-	}
-	else {
-		crt::pauseDetector.pauseFlag.setFromISR();
-	}
+	crt::pauseDetector.signalFlag.setFromISR();
 }
 
 void setup()

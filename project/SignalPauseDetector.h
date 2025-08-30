@@ -75,20 +75,22 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_PAUSE:
-                    wait(pauseFlag);
+                    wait(signalFlag);
                     t_stopTime = esp_timer_get_time();
                     necReceiver.signalDetected(t_stopTime - t_startTime);
-                    timer.start(6000);
                     t_startTime = esp_timer_get_time();
+                    timer.start( T_MAX_PAUSE_US + 1000 ); // +1000 to avoid too early firing.);
+                    signalFlag.clear();
                     state = STATE_WAITING_FOR_SIGNAL;
                     break;
 
                 case STATE_WAITING_FOR_SIGNAL:
-                    waitAny(signalFlag + timer);
-                    if(hasFired(signalFlag)) {
+                    waitAny(pauseFlag + timer);
+                    if(hasFired(pauseFlag)) {
                         t_stopTime = esp_timer_get_time();
                         necReceiver.pauseDetected(t_stopTime - t_startTime);
                         t_startTime = esp_timer_get_time();
+                        pauseFlag.clear();
                         state = STATE_WAITING_FOR_PAUSE;
                     }
                     else if(hasFired(timer)) {

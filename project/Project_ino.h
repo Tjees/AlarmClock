@@ -42,10 +42,10 @@ crt::SignalPauseDetector* crt::SignalPauseDetector::instance = nullptr;
 
 void IRAM_ATTR isrHandler(void* args) {
 	if(gpio_get_level(GPIO_NUM_11) == LOW) {
-		crt::pauseDetector.signalFlag.setFromISR();
-	}
-	else {
 		crt::pauseDetector.pauseFlag.setFromISR();
+	}
+	else if(gpio_get_level(GPIO_NUM_11) == HIGH) {
+		crt::pauseDetector.signalFlag.setFromISR();
 	}
 }
 

@@ -121,6 +121,7 @@ Enkele opmerkingen die ik over het huidige klassendiagram heb:
 - Momenteel zijn er te veel references die wellicht ook binnen de control klassen zouden zijn, een voorbeeld is de buzzer, die alleen door instelcontrol gebruikt wordt en dus binnen dat object aangemaakt kan worden in plaats van via een reference meegegeven te worden.
 - Momenteel zijn er geen listener en handler klassen, momenteel is er geen nood (en was er ook geen tijd) voor een listener. Wellicht zou een listener toegepast kunnen worden op de control klassen waarbij ze luisteren naar de IR klassen voor een bericht. Momenteel fungeert de IR klasse als de handler klassen omdat alle bytes(buttons) daarin verwerkt worden. Mochten er later aparte buttons zijn zou er eventueel een handler klassen kunnen zijn die alle buttons updatet (dus samen via cohesie ipv aparte buttons).
 - Verder voelt het nog een beetje rommelig dus zou er nog eens verder naar kunnen worden gekeken om eventueel het een en ander op te schonen.
+- Als laatste nog de control klassen (en display en buzzer) met isActive te markeren.
 
 <h2>Taakstructurering</h2>
 

@@ -195,7 +195,7 @@ Nu wil ik wel nog zeggen dat de STDs zeker niet "af" zijn, tenminste dat vind ik
 De volgende STDs zijn gemaakt:
 
 <h3>STD NecReceiver</h3>
-(Deze is overgenomen van het gegeven voorbeeldy)
+(Deze is overgenomen van het gegeven voorbeeld)
 
 ![Diagram](./NEC%20Protocol%20with%20flexibelized%20amount%20of%20bytes-NecReceiver.svg)
 

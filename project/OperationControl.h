@@ -30,19 +30,17 @@ namespace crt
         // flag etc.
         Timer timer;
         Display& display;
-        Mutex& oledMutex;
         Buzzer& buzzer;
 
         prj_Time &time;
         prj_Time &alarm;
 
 	public:
-		OperationControl(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display& display, Mutex& oledMutex, Buzzer& buzzer, prj_Time &time, prj_Time &alarm) :	
+		OperationControl(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, Display& display, Buzzer& buzzer, prj_Time &time, prj_Time &alarm) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             state(STATE_UPDATE_TIME),
             timer(this),
             display(display),
-            oledMutex(oledMutex),
             buzzer(buzzer),
             time(time),
             alarm(alarm)

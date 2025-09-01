@@ -39,7 +39,6 @@ namespace crt
 	public:
         static crt::SignalPauseDetector* instance;
         Flag signalFlag;
-        Flag pauseFlag;
 
 		SignalPauseDetector(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, NecReceiver& necReceiver) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
@@ -48,8 +47,7 @@ namespace crt
             t_signalUs(0),
             t_startTime(0),
             necReceiver(necReceiver),
-            signalFlag(this),
-            pauseFlag(this)
+            signalFlag(this)
 		{
             instance = this;
 			start();
@@ -86,15 +84,15 @@ namespace crt
 
                 case STATE_WAITING_FOR_SIGNAL:
                     //logger.logText("WAITING_FOR_SIGNAL");
-                    waitAny(pauseFlag + timer);
-                    if(hasFired(pauseFlag)) {
+                    waitAny(signalFlag + timer);
+                    if(hasFired(signalFlag)) {
                         t_stopTime = esp_timer_get_time();
                         necReceiver.pauseDetected(t_stopTime - t_startTime);
                         t_startTime = esp_timer_get_time();
                         state = STATE_WAITING_FOR_PAUSE;
                     }
                     else if(hasFired(timer)) {
-                        necReceiver.pauseDetected(T_MAX_PAUSE_US);
+                        necReceiver.pauseDetected( T_MAX_PAUSE_US + 1000 );
                     }
                     break;
                 

@@ -85,12 +85,12 @@ namespace crt
         void drawMenu() {
             display.clearDisplay();
 
-            display.setTextSize(2);
+            display.setTextSize(1);
             display.setTextColor(WHITE);
             display.setCursor(0,8);
             display.println("===MENU===");
-            display.println("1. Set time");
-            display.println("2. Set alarm");
+            display.println("* Set time");
+            display.println("# Set alarm");
             display.display();
         }
 

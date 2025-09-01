@@ -62,7 +62,7 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_PAUSE:
-                    wait(signalFlag);
+                    //wait(signalFlag);
                     timer.sleep_us(100);
                     //delayMicroseconds(100);
                     if(tsopReceiver.isSignalPresent()) {

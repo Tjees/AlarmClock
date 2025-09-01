@@ -10,6 +10,10 @@
 // This file contains the code of multiple tasks that run concurrently and notify eachother using flags.
 
 #define T_MAX_PAUSE_US 6000
+#define MIN_SIGNAL_US 300
+#define MIN_PAUSE_US 300
+#define MAX_SIGNAL_US 30000
+#define MAX_PAUSE_US 70009
 
 namespace crt
 {
@@ -30,8 +34,10 @@ namespace crt
         uint32_t t_signalUs;
         uint32_t t_pauseUs;
 
-        uint32_t t_startTime;
-        uint32_t t_stopTime;
+        int64_t t_startTime;
+        int64_t t_stopTime;
+
+        uint32_t duration;
 
         NecReceiver& necReceiver;
         TsopReceiver tsopReceiver = TsopReceiver(11);
@@ -43,9 +49,12 @@ namespace crt
 		SignalPauseDetector(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, NecReceiver& necReceiver) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             timer(this),
-            state(STATE_WAITING_FOR_SIGNAL),
+            state(STATE_WAITING_FOR_PAUSE),
             t_signalUs(0),
+            t_pauseUs(0),
             t_startTime(0),
+            t_stopTime(0),
+            duration(0),
             necReceiver(necReceiver),
             signalFlag(this)
 		{
@@ -74,12 +83,18 @@ namespace crt
                 {
                 case STATE_WAITING_FOR_PAUSE:
                     //logger.logText("WAITING_FOR_PAUSE");
-                    wait(signalFlag);
-                    t_stopTime = esp_timer_get_time();
-                    necReceiver.signalDetected(t_stopTime - t_startTime);
-                    t_startTime = esp_timer_get_time();
-                    timer.start( T_MAX_PAUSE_US + 1000 ); // +1000 to avoid too early firing.);
-                    state = STATE_WAITING_FOR_SIGNAL;
+                    waitAny(signalFlag);
+                    if(hasFired(signalFlag)) {
+                        t_stopTime = esp_timer_get_time();
+                        duration = (uint32_t)t_stopTime - t_startTime;
+                        t_startTime = t_stopTime;
+                        if(duration > MIN_SIGNAL_US && duration < MAX_SIGNAL_US) {
+                            logger.logUint32(duration);
+                            necReceiver.signalDetected(duration);
+                            timer.start( T_MAX_PAUSE_US + 1000 ); // +1000 to avoid too early firing.);
+                            state = STATE_WAITING_FOR_SIGNAL;
+                        }
+                    }
                     break;
 
                 case STATE_WAITING_FOR_SIGNAL:
@@ -87,9 +102,13 @@ namespace crt
                     waitAny(signalFlag + timer);
                     if(hasFired(signalFlag)) {
                         t_stopTime = esp_timer_get_time();
-                        necReceiver.pauseDetected(t_stopTime - t_startTime);
-                        t_startTime = esp_timer_get_time();
-                        state = STATE_WAITING_FOR_PAUSE;
+                        duration = (uint32_t)t_stopTime - t_startTime;
+                        t_startTime = t_stopTime;
+                        if(duration > MIN_PAUSE_US && duration < MAX_PAUSE_US) {
+                            logger.logUint32(duration);
+                            necReceiver.pauseDetected(duration);
+                            state = STATE_WAITING_FOR_PAUSE;
+                        }
                     }
                     else if(hasFired(timer)) {
                         necReceiver.pauseDetected( T_MAX_PAUSE_US + 1000 );

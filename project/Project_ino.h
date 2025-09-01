@@ -49,7 +49,7 @@ void setup()
 	Serial.begin(115200);    // Only needed when using Serial.print();
 	Wire.begin(6, 7);
 
-	pinMode(GPIO_NUM_12, OUTPUT);
+	//pinMode(GPIO_NUM_10, INPUT_PULLUP);
 
 	// Configure GPIO for interrupt (example with pin 11)
     gpio_config_t io_conf = {};

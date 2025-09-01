@@ -99,12 +99,14 @@ namespace crt
 
 			while (true)
 			{
-				// dumpStackHighWaterMarkIfIncreased(); 		// This function call takes about 0.25ms! It should be called while debugging only.
+				//dumpStackHighWaterMarkIfIncreased(); 		// This function call takes about 0.25ms! It should be called while debugging only.
 
 				switch (state)
                 {
                 case STATE_WAITING_FOR_LEAD_SIGNAL:
+                    //logger.logText("WAITING_FOR_LEAD_SIGNAL");
                     signalQueue.read(t_signalUs);
+                    // logger.logUint32(t_signalUs);
                     if((t_signalUs > T_LEADSIGNAL_MIN_US) && (t_signalUs < T_LEADSIGNAL_MAX_US)) {
                         state = STATE_WAITING_FOR_LEAD_PAUSE;
                         logger.logText("Changed state to Waiting For Lead Pause.");
@@ -112,6 +114,7 @@ namespace crt
                     break;
 
                 case STATE_WAITING_FOR_LEAD_PAUSE:
+                    // logger.logText("WAITING_FOR_LEAD_PAUSE");
                     pauseQueue.read(t_pauseUs);
                     if((t_pauseUs > T_LEADPAUSE_MIN_US) && (t_pauseUs < T_LEADPAUSE_MAX_US)) {
                         n = 0;
@@ -126,6 +129,7 @@ namespace crt
                     break;
                 
                 case STATE_WAITING_FOR_BIT_PAUSE:
+                    // logger.logText("WAITING_FOR_BIT_PAUSE");
                     pauseQueue.read(t_pauseUs);
                     if((t_pauseUs > T_BITPAUSE_MIN_US) && (t_pauseUs < T_BITPAUSE_MAX_US)) {
                         m = m<<1;
@@ -136,13 +140,15 @@ namespace crt
                     }
                     else{
                         //extractMessage(msg, nofBytes, m, n);
+                        logger.logText("Bits received:");
+                        logger.logUint32(n);
                         splitIntoHexBytes(m);
 
-                        ESP_LOGI("byte1", "%x", byte1);
-                        ESP_LOGI("byte2", "%x", byte2);
-                        ESP_LOGI("byte3", "%x", byte3);
-                        ESP_LOGI("byte4", "%x", byte4);
-                        ESP_LOGI("nofbytes","%lu", n);
+                        // ESP_LOGI("byte1", "%x", byte1);
+                        // ESP_LOGI("byte2", "%x", byte2);
+                        // ESP_LOGI("byte3", "%x", byte3);
+                        // ESP_LOGI("byte4", "%x", byte4);
+                        // ESP_LOGI("nofbytes","%lu", n);
 
                         state = STATE_WAITING_FOR_LEAD_SIGNAL;
 
@@ -158,8 +164,8 @@ namespace crt
                     break;
                 }
 
-                //vTaskDelay(1);
-                taskYIELD();
+                vTaskDelay(1);
+                //taskYIELD();
 			}
 		}
 	}; // end class BallControl

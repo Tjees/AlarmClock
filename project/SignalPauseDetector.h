@@ -36,6 +36,8 @@ namespace crt
         NecReceiver& necReceiver;
         TsopReceiver tsopReceiver = TsopReceiver(11);
 
+        uint32_t diffTime;
+
 	public:
         static crt::SignalPauseDetector* instance;
         Flag signalFlag;
@@ -70,27 +72,30 @@ namespace crt
 
 			while (true)
 			{
-				// dumpStackHighWaterMarkIfIncreased(); 		// This function call takes about 0.25ms! It should be called while debugging only.
+				//dumpStackHighWaterMarkIfIncreased(); 		// This function call takes about 0.25ms! It should be called while debugging only.
 
 				switch (state)
                 {
                 case STATE_WAITING_FOR_PAUSE:
+                    //logger.logText("WAITING_FOR_PAUSE");
                     wait(signalFlag);
                     t_stopTime = esp_timer_get_time();
-                    necReceiver.signalDetected(t_stopTime - t_startTime);
+                    diffTime = t_stopTime - t_startTime;
+                    //logger.logUint32(t_stopTime);
+                    necReceiver.signalDetected(diffTime);
+                    //logger.logUint32(t_startTime);
                     t_startTime = esp_timer_get_time();
                     timer.start( T_MAX_PAUSE_US + 1000 ); // +1000 to avoid too early firing.);
-                    signalFlag.clear();
                     state = STATE_WAITING_FOR_SIGNAL;
                     break;
 
                 case STATE_WAITING_FOR_SIGNAL:
+                    //logger.logText("WAITING_FOR_SIGNAL");
                     waitAny(pauseFlag + timer);
                     if(hasFired(pauseFlag)) {
                         t_stopTime = esp_timer_get_time();
                         necReceiver.pauseDetected(t_stopTime - t_startTime);
                         t_startTime = esp_timer_get_time();
-                        pauseFlag.clear();
                         state = STATE_WAITING_FOR_PAUSE;
                     }
                     else if(hasFired(timer)) {

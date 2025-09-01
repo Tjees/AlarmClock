@@ -109,6 +109,20 @@ Hieronder heb ik een tabel met de verschillende objecten en functies:
 | `OperationControl`     | Control        | Houdt de tijd bij en activeert het alarm wanneer nodig.                                    |
 | `Time`                 | Entity         | Wordt gebruikt voor het opslaan van de systeem en alarm tijd.                              |
 
+<h2>Klassen Diagram</h2>
+Vanuit het object model is een klassen diagram gemaakt. Nu moet daarbij wel verteld worden dat het klassen diagram veel veranderd is door aan de slag te gaan met de code en er dus ook nog dingen in zitten die ik minder net vindt. Deze zal ik ook toelichten.
+
+Het volgende (huidige) klassendiagram is gemaakt:
+![Diagram](./KlassenDiagram.png)
+
+Binnen dit klassen diagram zijn de verschillende objecten te zien met de relaties hiertussen. Momenteel is ook te zien welke andere objecten ze bevatten. Flags, queues etc. zijn niet toegevoegd.
+
+Enkele opmerkingen die ik over het huidige klassendiagram heb:
+- Momenteel zijn er te veel references die wellicht ook binnen de control klassen zouden zijn, een voorbeeld is de buzzer, die alleen door instelcontrol gebruikt wordt en dus binnen dat object aangemaakt kan worden in plaats van via een reference meegegeven te worden.
+- Momenteel zijn er geen listener en handler klassen, momenteel is er geen nood (en was er ook geen tijd) voor een listener. Wellicht zou een listener toegepast kunnen worden op de control klassen waarbij ze luisteren naar de IR klassen voor een bericht. Momenteel fungeert de IR klasse als de handler klassen omdat alle bytes(buttons) daarin verwerkt worden. Mochten er later aparte buttons zijn zou er eventueel een handler klassen kunnen zijn die alle buttons updatet (dus samen via cohesie ipv aparte buttons).
+- Verder voelt het nog een beetje rommelig dus zou er nog eens verder naar kunnen worden gekeken om eventueel het een en ander op te schonen.
+- Als laatste nog de control klassen (en display en buzzer) met isActive te markeren.
+
 <h2>Taakstructurering</h2>
 
 ## Eerste versie van taken
@@ -180,6 +194,11 @@ De STDs vond ik nogal lastig om te maken omdat deze best nauwkeuring moesten zij
 Nu wil ik wel nog zeggen dat de STDs zeker niet "af" zijn, tenminste dat vind ik. De functionaliteit voor het prototype zit er in maar er kan nog veel aan verbeterd worden. Ik heb zelf ook nog comments erbij gezet, deze mogen genegeerd worden maar zouden wel interessant kunnen zijn.
 
 De volgende STDs zijn gemaakt:
+
+<h3>STD NecReceiver</h3>
+(Deze is overgenomen van het gegeven voorbeeld)
+
+![Diagram](./NEC%20Protocol%20with%20flexibelized%20amount%20of%20bytes-NecReceiver.svg)
 
 <h3>STD OperationControl</h3>
 

@@ -86,12 +86,12 @@ namespace crt
                     waitAny(signalFlag);
                     if(hasFired(signalFlag)) {
                         t_stopTime = esp_timer_get_time();
-                        duration = (uint32_t)t_stopTime - t_startTime;
+                        duration = t_stopTime - t_startTime;
                         t_startTime = t_stopTime;
                         if(duration > MIN_SIGNAL_US && duration < MAX_SIGNAL_US) {
                             logger.logUint32(duration);
-                            necReceiver.signalDetected(duration);
-                            timer.start( T_MAX_PAUSE_US + 1000 ); // +1000 to avoid too early firing.);
+                            necReceiver.signalDetected((uint32_t)duration);
+                            timer.start( 12000 );
                             state = STATE_WAITING_FOR_SIGNAL;
                         }
                     }
@@ -102,16 +102,17 @@ namespace crt
                     waitAny(signalFlag + timer);
                     if(hasFired(signalFlag)) {
                         t_stopTime = esp_timer_get_time();
-                        duration = (uint32_t)t_stopTime - t_startTime;
+                        duration = t_stopTime - t_startTime;
                         t_startTime = t_stopTime;
                         if(duration > MIN_PAUSE_US && duration < MAX_PAUSE_US) {
                             logger.logUint32(duration);
-                            necReceiver.pauseDetected(duration);
+                            necReceiver.pauseDetected((uint32_t)duration);
                             state = STATE_WAITING_FOR_PAUSE;
                         }
                     }
                     else if(hasFired(timer)) {
-                        necReceiver.pauseDetected( T_MAX_PAUSE_US + 1000 );
+                        necReceiver.pauseDetected( 12000 );
+                        state = STATE_WAITING_FOR_PAUSE;
                     }
                     break;
                 

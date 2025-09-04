@@ -19,6 +19,7 @@ namespace crt
 	{
         enum State
         {
+            STATE_WAITING_FOR_START_PULSE,
             STATE_WAITING_FOR_PAUSE,
             STATE_WAITING_FOR_SIGNAL
         };
@@ -40,7 +41,7 @@ namespace crt
 		SignalPauseDetector(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, NecReceiver& necReceiver) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             timer(this),
-            state(STATE_WAITING_FOR_PAUSE),
+            state(STATE_WAITING_FOR_START_PULSE),
             t_signalUs(0),
             necReceiver(necReceiver),
             signalFlag(this)
@@ -61,15 +62,13 @@ namespace crt
 
 				switch (state)
                 {
+                case STATE_WAITING_FOR_START_PULSE:
+                    wait(signalFlag);
+                    state = STATE_WAITING_FOR_PAUSE;
                 case STATE_WAITING_FOR_PAUSE:
-                    //wait(signalFlag);
                     timer.sleep_us(100);
-                    //delayMicroseconds(100);
                     if(tsopReceiver.isSignalPresent()) {
                         t_signalUs += 100;
-                        signalFlag.set();
-                        // ESP_LOGI("increase", "increased signal us.");
-                        // ESP_LOGI("signal","%lu",t_signalUs);
                     }
                     else {
                         necReceiver.signalDetected(t_signalUs);
@@ -81,20 +80,18 @@ namespace crt
 
                 case STATE_WAITING_FOR_SIGNAL:
                     timer.sleep_us(100);
-                    //delayMicroseconds(100);
                     if(!tsopReceiver.isSignalPresent()) {
                         t_pauseUs += 100;
                         if(t_pauseUs > T_MAX_PAUSE_US) {
                             necReceiver.pauseDetected(t_pauseUs);
                             t_pauseUs = 0;
+                            state = STATE_WAITING_FOR_START_PULSE;
                         }
                     }
                     else {
                         necReceiver.pauseDetected(t_pauseUs);
                         t_signalUs = 0;
-                        signalFlag.set();
                         state = STATE_WAITING_FOR_PAUSE;
-                        // logger.logText("Changed state since pause detected.");
                     }
                     break;
                 

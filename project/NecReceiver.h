@@ -29,8 +29,8 @@ namespace crt
         };
 
 	private:
-        Queue<uint32_t, 10> signalQueue;
-        Queue<uint32_t, 10> pauseQueue;
+        Queue<uint32_t, 34> signalQueue;
+        Queue<uint32_t, 34> pauseQueue;
         State state;
 
         uint32_t t_signalUs;
@@ -43,6 +43,8 @@ namespace crt
         uint32_t nofBytes;
 
         uint8_t byte1, byte2, byte3, byte4;
+
+        uint8_t bitsReceived;
 
         InstelControl& instelControl;
 
@@ -67,6 +69,9 @@ namespace crt
         }
 
         void pauseDetected(uint32_t t_Us) {
+            if(t_Us < T_LEADPAUSE_MIN_US) {
+                n++;
+            }
             pauseQueue.write(t_Us);
             // ESP_LOGI("pause","%lu",t_Us);
         }
@@ -100,56 +105,51 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_LEAD_SIGNAL:
-                    //logger.logText("WAITING_FOR_LEAD_SIGNAL");
+                    logger.logText("WAITING_FOR_LEAD_SIGNAL");
                     signalQueue.read(t_signalUs);
-                    // logger.logUint32(t_signalUs);
+                    logger.logUint32(t_signalUs);
                     if((t_signalUs > T_LEADSIGNAL_MIN_US) && (t_signalUs < T_LEADSIGNAL_MAX_US)) {
                         state = STATE_WAITING_FOR_LEAD_PAUSE;
-                        logger.logText("Changed state to Waiting For Lead Pause.");
+                        //logger.logText("Changed state to Waiting For Lead Pause.");
                     }
                     break;
 
                 case STATE_WAITING_FOR_LEAD_PAUSE:
-                    // logger.logText("WAITING_FOR_LEAD_PAUSE");
+                    logger.logText("WAITING_FOR_LEAD_PAUSE");
                     pauseQueue.read(t_pauseUs);
+                    logger.logUint32(t_pauseUs);
                     if((t_pauseUs > T_LEADPAUSE_MIN_US) && (t_pauseUs < T_LEADPAUSE_MAX_US)) {
                         n = 0;
                         m = 0;
                         state = STATE_WAITING_FOR_BIT_PAUSE;
-                        logger.logText("Changed state to Waiting For Bit Pause.");
+                        //logger.logText("Changed state to Waiting For Bit Pause.");
                     }
                     else {
                         state = STATE_WAITING_FOR_LEAD_SIGNAL;
-                        logger.logText("Changed state to Waiting For Lead Signal.");
+                        //logger.logText("Changed state to Waiting For Lead Signal.");
                     }
                     break;
                 
                 case STATE_WAITING_FOR_BIT_PAUSE:
-                    // logger.logText("WAITING_FOR_BIT_PAUSE");
+                    logger.logText("WAITING_FOR_BIT_PAUSE");
                     pauseQueue.read(t_pauseUs);
+                    logger.logUint32(t_pauseUs);
                     if((t_pauseUs > T_BITPAUSE_MIN_US) && (t_pauseUs < T_BITPAUSE_MAX_US)) {
                         m = m<<1;
                         if(t_pauseUs > T_BITPAUSE_THRESHOLD_ZERO_ONE) {
                             m = m | 1;
                         }
-                        n++;
                     }
-                    else{
+                    if(n == 32){
                         //extractMessage(msg, nofBytes, m, n);
                         logger.logText("Bits received:");
                         logger.logUint32(n);
                         splitIntoHexBytes(m);
 
-                        // ESP_LOGI("byte1", "%x", byte1);
-                        // ESP_LOGI("byte2", "%x", byte2);
-                        // ESP_LOGI("byte3", "%x", byte3);
-                        // ESP_LOGI("byte4", "%x", byte4);
-                        // ESP_LOGI("nofbytes","%lu", n);
-
                         state = STATE_WAITING_FOR_LEAD_SIGNAL;
 
-                        logger.logText("Sent message to console.");
-                        logger.logText("Changed state to Waiting For Lead Signal.");
+                        //logger.logText("Sent message to console.");
+                        //logger.logText("Changed state to Waiting For Lead Signal.");
 
                         // Geef byte3 door aan instelcontrol queue. 
                         instelControl.MessageReceived(byte3);
@@ -160,8 +160,8 @@ namespace crt
                     break;
                 }
 
-                vTaskDelay(1);
-                //taskYIELD();
+                //vTaskDelay(1);
+                taskYIELD();
 			}
 		}
 	}; // end class BallControl

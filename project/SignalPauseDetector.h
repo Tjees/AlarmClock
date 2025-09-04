@@ -12,8 +12,8 @@
 #define T_MAX_PAUSE_US 6000
 #define MIN_SIGNAL_US 300
 #define MIN_PAUSE_US 300
-#define MAX_SIGNAL_US 30000
-#define MAX_PAUSE_US 70009
+#define MAX_SIGNAL_US 12000
+#define MAX_PAUSE_US 8000
 
 namespace crt
 {
@@ -45,20 +45,23 @@ namespace crt
 	public:
         static crt::SignalPauseDetector* instance;
         Flag signalFlag;
+        Queue<int64_t, 34> signalQueue;
 
 		SignalPauseDetector(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, NecReceiver& necReceiver) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
             timer(this),
-            state(STATE_WAITING_FOR_PAUSE),
+            state(STATE_WAITING_FOR_SIGNAL),
             t_signalUs(0),
             t_pauseUs(0),
             t_startTime(0),
             t_stopTime(0),
             duration(0),
             necReceiver(necReceiver),
-            signalFlag(this)
+            signalFlag(this),
+            signalQueue(this)
 		{
             instance = this;
+            t_startTime = esp_timer_get_time();
 			start();
 		}
 
@@ -82,38 +85,31 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_PAUSE:
-                    //logger.logText("WAITING_FOR_PAUSE");
-                    waitAny(signalFlag);
-                    if(hasFired(signalFlag)) {
-                        t_stopTime = esp_timer_get_time();
-                        duration = t_stopTime - t_startTime;
-                        t_startTime = t_stopTime;
-                        if(duration > MIN_SIGNAL_US && duration < MAX_SIGNAL_US) {
-                            logger.logUint32(duration);
-                            necReceiver.signalDetected((uint32_t)duration);
-                            timer.start( 12000 );
-                            state = STATE_WAITING_FOR_SIGNAL;
-                        }
-                    }
+                    logger.logText("WAITING_FOR_PAUSE");
+                    wait(signalQueue);
+                    
+                    t_stopTime = esp_timer_get_time();
+                    duration = t_stopTime - t_startTime;
+                    t_startTime = t_stopTime;
+
+                    logger.logInt32(duration);
+
+                    necReceiver.signalDetected((uint32_t)duration);
+                    state = STATE_WAITING_FOR_SIGNAL;
                     break;
 
                 case STATE_WAITING_FOR_SIGNAL:
-                    //logger.logText("WAITING_FOR_SIGNAL");
-                    waitAny(signalFlag + timer);
-                    if(hasFired(signalFlag)) {
-                        t_stopTime = esp_timer_get_time();
-                        duration = t_stopTime - t_startTime;
-                        t_startTime = t_stopTime;
-                        if(duration > MIN_PAUSE_US && duration < MAX_PAUSE_US) {
-                            logger.logUint32(duration);
-                            necReceiver.pauseDetected((uint32_t)duration);
-                            state = STATE_WAITING_FOR_PAUSE;
-                        }
-                    }
-                    else if(hasFired(timer)) {
-                        necReceiver.pauseDetected( 12000 );
-                        state = STATE_WAITING_FOR_PAUSE;
-                    }
+                    logger.logText("WAITING_FOR_SIGNAL");
+                    wait(signalQueue);
+
+                    t_stopTime = esp_timer_get_time();
+                    duration = t_stopTime - t_startTime;
+                    t_startTime = t_stopTime;
+
+                    logger.logInt32(duration);
+
+                    necReceiver.pauseDetected((uint32_t)duration);
+                    state = STATE_WAITING_FOR_PAUSE;
                     break;
                 
                 default:
@@ -121,7 +117,7 @@ namespace crt
                 }
 
                 taskYIELD();
-                // vTaskDelay(1);
+                //vTaskDelay(1);
 			}
 		}
 	}; // end class BallControl

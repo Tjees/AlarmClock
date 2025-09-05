@@ -90,12 +90,12 @@ namespace crt
                         logger.logInt32(duration);
 
                         necReceiver.signalDetected((uint32_t)duration);
+                        timer.start(7000);
                         state = STATE_WAITING_FOR_SIGNAL;
                     }
                     break;
 
                 case STATE_WAITING_FOR_SIGNAL:
-                    timer.start(7000); // if no signal within this time, reset state machine.
                     //logger.logText("WAITING_FOR_PAUSE");
                     waitAny(signalFlag + timer);
                     if(hasFired(timer)) {

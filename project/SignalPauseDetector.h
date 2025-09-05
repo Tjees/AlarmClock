@@ -45,7 +45,6 @@ namespace crt
 	public:
         static crt::SignalPauseDetector* instance;
         Flag signalFlag;
-        Queue<int64_t, 34> signalQueue;
 
 		SignalPauseDetector(const char *taskName, unsigned int taskPriority, unsigned int taskSizeBytes, unsigned int taskCoreNumber, NecReceiver& necReceiver) :	
 			Task(taskName, taskPriority, taskSizeBytes, taskCoreNumber),
@@ -57,20 +56,12 @@ namespace crt
             t_stopTime(0),
             duration(0),
             necReceiver(necReceiver),
-            signalFlag(this),
-            signalQueue(this)
+            signalFlag(this)
 		{
             instance = this;
             t_startTime = esp_timer_get_time();
 			start();
 		}
-
-        // static IRAM_ATTR void setSignalFlag(void* args) {
-        //     if(instance) {
-        //         instance -> t_signalUs = 100;
-        //     }
-        //     portYIELD_FROM_ISR();
-        // }
 
 	private:
 		/*override keyword not supported*/
@@ -85,31 +76,41 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_PAUSE:
-                    logger.logText("WAITING_FOR_PAUSE");
-                    wait(signalQueue);
-                    
-                    t_stopTime = esp_timer_get_time();
-                    duration = t_stopTime - t_startTime;
-                    t_startTime = t_stopTime;
+                    timer.start(12000); // if no signal within this time, reset state machine.
+                    //logger.logText("WAITING_FOR_PAUSE");
+                    waitAny(signalFlag + timer);
+                    if(hasFired(timer)) {
+                        state = STATE_WAITING_FOR_SIGNAL;
+                    }
+                    else if (hasFired(signalFlag)) {
+                        t_stopTime = esp_timer_get_time();
+                        duration = t_stopTime - t_startTime;
+                        t_startTime = t_stopTime;
 
-                    logger.logInt32(duration);
+                        logger.logInt32(duration);
 
-                    necReceiver.signalDetected((uint32_t)duration);
-                    state = STATE_WAITING_FOR_SIGNAL;
+                        necReceiver.signalDetected((uint32_t)duration);
+                        state = STATE_WAITING_FOR_SIGNAL;
+                    }
                     break;
 
                 case STATE_WAITING_FOR_SIGNAL:
-                    logger.logText("WAITING_FOR_SIGNAL");
-                    wait(signalQueue);
+                    timer.start(7000); // if no signal within this time, reset state machine.
+                    //logger.logText("WAITING_FOR_PAUSE");
+                    waitAny(signalFlag + timer);
+                    if(hasFired(timer)) {
+                        necReceiver.pauseDetected(7000);
+                    }
+                    else if(hasFired(signalFlag)) {
+                        t_stopTime = esp_timer_get_time();
+                        duration = t_stopTime - t_startTime;
+                        t_startTime = t_stopTime;
 
-                    t_stopTime = esp_timer_get_time();
-                    duration = t_stopTime - t_startTime;
-                    t_startTime = t_stopTime;
+                        logger.logInt32(duration);
 
-                    logger.logInt32(duration);
-
-                    necReceiver.pauseDetected((uint32_t)duration);
-                    state = STATE_WAITING_FOR_PAUSE;
+                        necReceiver.pauseDetected((uint32_t)duration);
+                        state = STATE_WAITING_FOR_PAUSE;
+                    }
                     break;
                 
                 default:

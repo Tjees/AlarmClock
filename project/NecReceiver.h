@@ -29,8 +29,8 @@ namespace crt
         };
 
 	private:
-        Queue<uint32_t, 34> signalQueue;
-        Queue<uint32_t, 34> pauseQueue;
+        Queue<uint32_t, 10> signalQueue;
+        Queue<uint32_t, 10> pauseQueue;
         State state;
 
         uint32_t t_signalUs;
@@ -63,6 +63,7 @@ namespace crt
             if(t_Us > T_LEADSIGNAL_MIN_US) {
                 signalQueue.clear();
                 pauseQueue.clear();
+                state = STATE_WAITING_FOR_LEAD_SIGNAL;
             }
             signalQueue.write(t_Us);
             // ESP_LOGI("signal","%lu",t_Us);
@@ -105,9 +106,9 @@ namespace crt
 				switch (state)
                 {
                 case STATE_WAITING_FOR_LEAD_SIGNAL:
-                    logger.logText("WAITING_FOR_LEAD_SIGNAL");
+                    //logger.logText("WAITING_FOR_LEAD_SIGNAL");
                     signalQueue.read(t_signalUs);
-                    logger.logUint32(t_signalUs);
+                    //logger.logUint32(t_signalUs);
                     if((t_signalUs > T_LEADSIGNAL_MIN_US) && (t_signalUs < T_LEADSIGNAL_MAX_US)) {
                         state = STATE_WAITING_FOR_LEAD_PAUSE;
                         //logger.logText("Changed state to Waiting For Lead Pause.");
@@ -115,9 +116,9 @@ namespace crt
                     break;
 
                 case STATE_WAITING_FOR_LEAD_PAUSE:
-                    logger.logText("WAITING_FOR_LEAD_PAUSE");
+                    //logger.logText("WAITING_FOR_LEAD_PAUSE");
                     pauseQueue.read(t_pauseUs);
-                    logger.logUint32(t_pauseUs);
+                    //logger.logUint32(t_pauseUs);
                     if((t_pauseUs > T_LEADPAUSE_MIN_US) && (t_pauseUs < T_LEADPAUSE_MAX_US)) {
                         n = 0;
                         m = 0;
@@ -131,16 +132,16 @@ namespace crt
                     break;
                 
                 case STATE_WAITING_FOR_BIT_PAUSE:
-                    logger.logText("WAITING_FOR_BIT_PAUSE");
+                    //logger.logText("WAITING_FOR_BIT_PAUSE");
                     pauseQueue.read(t_pauseUs);
-                    logger.logUint32(t_pauseUs);
+                    //logger.logUint32(t_pauseUs);
                     if((t_pauseUs > T_BITPAUSE_MIN_US) && (t_pauseUs < T_BITPAUSE_MAX_US)) {
                         m = m<<1;
                         if(t_pauseUs > T_BITPAUSE_THRESHOLD_ZERO_ONE) {
                             m = m | 1;
                         }
                     }
-                    if(n == 32){
+                    else{
                         //extractMessage(msg, nofBytes, m, n);
                         logger.logText("Bits received:");
                         logger.logUint32(n);

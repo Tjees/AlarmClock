@@ -66,6 +66,7 @@ namespace crt
                     wait(signalFlag);
                     state = STATE_WAITING_FOR_PAUSE;
                 case STATE_WAITING_FOR_PAUSE:
+                    logger.logText("WAITING_FOR_PAUSE");
                     timer.sleep_us(100);
                     if(tsopReceiver.isSignalPresent()) {
                         t_signalUs += 100;
@@ -79,6 +80,7 @@ namespace crt
                     break;
 
                 case STATE_WAITING_FOR_SIGNAL:
+                    logger.logText("WAITING_FOR_SIGNAL");
                     timer.sleep_us(100);
                     if(!tsopReceiver.isSignalPresent()) {
                         t_pauseUs += 100;
@@ -86,12 +88,14 @@ namespace crt
                             necReceiver.pauseDetected(t_pauseUs);
                             t_pauseUs = 0;
                             state = STATE_WAITING_FOR_START_PULSE;
+                            logger.logUint32(t_pauseUs);
                         }
                     }
                     else {
                         necReceiver.pauseDetected(t_pauseUs);
                         t_signalUs = 0;
                         state = STATE_WAITING_FOR_PAUSE;
+                        logger.logUint32(t_pauseUs);
                     }
                     break;
                 
